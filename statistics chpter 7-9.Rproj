@@ -1,0 +1,139 @@
+---
+title: "statistics chpter 7-9"
+author: "Luckson"
+date: "22/09/2019"
+output: html_document
+---
+
+```{r}
+# answer 7.1
+
+plot(x = -3:3, y = 7:13, type = "n", main = "",xlab = "" , ylab = "")
+
+abline(h = c(7,13), col = "blue", lty= 2,lwd= 2)
+abline(v = c(-3,3), col = "blue", lty= 2,lwd= 2)
+
+text (x = 0, y = 10, labels = "something/nprofound")
+
+arrows(x0 = -2.5, y0=12.5, x1 = -1, y1 = 10.5)
+arrows(x0 = -2.5, y0=10,  x1 = -1, y1 = 10)
+arrows(x0 = -2.5, y0=7.5, x1 = -1, y1 = 9.5)
+
+arrows(x0 = 2.5, y0=12.5, x1 = -1, y1 = 10.5)
+arrows(x0 = 2.5, y0=10,   x1 = -1, y1 =10)
+arrows(x0 = 2.5, y0=7.5,  x1 = -1, y1 =9.5)
+
+lett<-data.frame(
+  weight = c(55,85,75,42,93,63,58,75,89,67),
+  height = c(161,185,174,154,188,178,170,167,181,178),
+  sex    = factor(c("female","male","male","female","male","male","female","male","male","female"))
+)
+
+plot(lett$weight, lett$height, type = "n"
+     xlab = "weights (kg), ylab = heights (cm)",
+     main="graph 1  showing Height measured against weight-sample size -10 people"
+     
+points(lett$weight [lett$sex == "male"],lett$height[lett$sex == "male"],pch =4, col = "red"
+       
+points(lett$weight [lett$sex =="female"], lett$height[lett$sex =="female"],pch = 2, col = "black"
+
+ultimate("topleft", ultimate = c("male","female"),
+         pch = c(4, 2), col = c("red", "black")
+         
+# answer 7.2
+
+library("ggplot2")
+
+graph1 <- qp(lett@weight, lett@)height,
+      xlab = "weights (kg)", ylab = "heights (cm)"
+      main = "graph 2 showing height measured against weight-sample size -10 people",
+      colour= lett@sex, shape = lett@sex
+      
+graph2 <- ggplot(data = lett, mapping = aes (weight,height,colour = sex))+geom_point(size= 7)+ scale_colour_manual(breaks= c("male","female"),values= c("red","yellow"))
+graph1
+graph2
+
+# answer 8.1
+data("quakes")
+write.table(x = quakes[quake@mag >=5,],file ="C:/R- Studio/Financials/q5.txt", sep= "!", row.names= FALSE
+q5dframe<- read.table(file= "C:/R- Studio/Financials/q5.txt",sep ="!",header = header = TRUE)
+q5dframe
+
+library("car")
+data("Duncan")
+write.table(x = Duncan,file = "C:/R- Studio/Finacials/Duncan.txt", sep = "!", row.names = FALSE)
+moreeighty <-  read.table(file = "C:/R- Studio/Finacials/Duncan.txt", sep = "!", header = TRUE)
+moreeighty
+
+library("ggplot2")
+
+ggplot(data = moreeighty, mapping = aes(education, income),main ="Graph showing income against education") +
+  geom_point(size= 3) + scale_color_manual(breaks = c(">=80", "=<80"),values = c("black", "white")+
+  xlim(0, 100) +
+  ggsave(filename = "C:/R- Studio/Finacials/car_duncan.png"))
+##dev.off
+
+```
+
+# answer 9.1
+```{r}
+ls("package:methods")[1:20]
+length(ls("package:methods"))
+
+environment(read.table) ##utils
+environment(data) ## Null
+environment(matrix) ## base
+environment(jpeg) ## grDevices
+
+any(ls("package:graphics") == "smoothScatter")
+```
+
+## answer 9.2
+```{r}
+args(seq)
+boz <- seq(-4,4,0.2)
+boz
+
+array(8:1, dim = c(2, 2, 2)) # using partital and positional argument stlye 
+rep(1:2, 3) # positional arg stlye
+seq(from = 10, to = 8, length = 5) # partital argument stlye
+sort(decreasing = T, x = c(2, 1, 1, 2, 0.3, 3, 1.3)) # exact argument stlye
+which(matrix(c(T, F, T, T), 2, 2)) # positional
+which(matrix(c(T, F, T, T), 2, 2), a = T) #positional and mixed argument stlye
+
+seeargs<- args(plot.default)
+seeargs
+
+plot.default(type = "p", pch = NULL, xlab = "years", ylab = "salary",
+             lwd = NULL, lty = NULL, col = NULL,
+             x = c(1, 5), y = c(10, 100))         
+         
+         
+     
+     
+
+
+
+
+```
+
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r cars}
+summary(cars)
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
