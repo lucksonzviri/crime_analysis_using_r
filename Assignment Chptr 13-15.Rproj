@@ -1,0 +1,258 @@
+---
+title: "Assignmemnt Chptr 13-15"
+author: "Luckson"
+date: "06/10/2019"
+output: html_document
+---
+
+```{r}
+## Answer 13.1
+
+##(i) Numeric-discrete
+##(ii) Categorical-ordinal
+##(iii) Numeric-continuous
+##(iv) Categorical-ordinal
+##(v) Categorical-nominal
+##(vi) Numeric-continuous
+
+#(b)
+
+##(i) Sample statistic. Population parameter is the proportion of NZers who own a gaming console.
+##(ii) Sample statistic. Population parameter is the average number of blemishes on the hoods of all cars at No Dodgy Carz.
+##(iii) Population parameter.
+##(iv) parameter-time parameter.
+##(v) Sample statistic. 
+
+## answer 13.2
+(a)
+data ("quakes")
+round(mean(quakes$depth>=300),2)
+#(b)
+mean(quakes$mag[quakes$depth>=300])
+mean
+median(quakes$mag[quakes$depth>=300])
+median
+#(c)
+for(i in levels(chickwts$feed)){
+  cat(i,": ",round(mean(chickwts$weight[chickwts$feed==i]),1)," grams\n",sep="")
+}
+#(d) count: numeric-discrete; spray: categorical-nominal
+#(e)
+Ctab <- table(InsectSprays$count)
+Ctab[Ctab==max(Ctab)]
+#(f)
+tapply(InsectSprays$count,INDEX=InsectSprays$spray,FUN=sum)
+#(g)
+for(i in levels(InsectSprays$spray)){
+  cat("Spray ",i,"; at least 5 bugs: ",round(mean(InsectSprays$count[InsectSprays$spray==i]>=5)*100,0),"% \n",sep="")
+}
+#(h)
+tapply(InsectSprays$count,INDEX=InsectSprays$spray,FUN=function(x) round(mean(x>=5)*100,0))
+
+##Answer 13.3
+#(a)
+quantile(chickwts$weight,c(0.1,0.3,0.9))
+chickvars <- tapply(chickwts$weight,INDEX=chickwts$feed,FUN=var)
+chickvars[chickvars==max(chickvars)]
+#(b)
+##(i)
+IQR(quakes$depth)
+##(ii)
+summary(quakes$mag[quakes$depth>=400]) ### Magnitudes at <400 have a similar amount of spread as those at >=400 (and an equivalent IQR of 0.5), but are centered at slightly higher values.
+##(iii)
+dmin <- min(quakes$depth)
+dmax <- max(quakes$depth)
+depthcat <- cut(quakes$depth,breaks=seq(dmin,dmax,length=5),include.lowest=TRUE,right=FALSE)
+levels(depthcat)
+##(iv)
+tapply(quakes$mag,INDEX=depthcat,FUN=mean)
+tapply(quakes$mag,INDEX=depthcat,FUN=sd)
+##(v)
+tapply(quakes$mag,INDEX=depthcat,FUN=quantile,prob=0.8)
+
+##Answer 13.4
+(a)
+weight <- c(55,85,75,42,93,63,58,75,89,67)
+height <- c(161,185,174,154,188,178,170,167,181,178)
+sex<-c("f","m","m","f","m","m","f","m","m","f")
+cor(weight,height)
+#(b)
+##(i)
+data ("mtcars")
+mtcars
+mtcars[1:32,]
+?mtcars
+
+##(ii)
+Corecoefgraph <- plot(mtcars[,4],mtcars[,7],xlab="Horsepower",ylab="time on quater mile")
+text(300,20,labels=c("The correlation coeffiecient is\n\n", round(timevshorsepowercor,2)))
+Corecoefgraph
+timevshorsepowercor<-cor(mtcars[,4],mtcars[,7])
+timevshorsepowercor
+
+##(iii)
+tranfac<-factor(mtcars[,9],labels=c("auto","manual"))
+tranfac
+
+##(iv)
+library(ggplot2)
+scatterplot <- qplot(mtcars[,4],mtcars[,7],main="Plot graph for Manual and Automatic cars from Dataset",
+               xlab="Horsepower",
+               ylab="time on quater mile",
+               color=tranfac,shape=tranfac)
+scatterplot
+
+##(v)
+
+#(c)
+flagging <-mtcars[,9]==0
+manualcorrelation <- round(cor(mtcars[,4][flagging],mtcars[,7][flagging]),4)
+manualcorrelation
+autocorrelation <- round(cor(mtcars[,4][!flagging],mtcars[,7][!flagging]),4)
+autocorrelation
+#Comment -- There is a growing negative correlation between car horsepower and quater-mile time using transmission mode (auto or manual)
+
+##(i)
+sunchicks <- chickwts$weight[chickwts$feed=="sunflower"]
+plot(sunchicks,rep(0,length(sunchicks)),yaxt="n",bty="n",xlab="sunflower chick weights",ylab="")
+abline(h=0,col="gray",lty=2)
+##(ii)
+sd(sunchicks)
+IQR(sunchicks)
+##(iii)
+sd(sunchicks[-which(sunchicks==min(sunchicks))])
+IQR(sunchicks[-which(sunchicks==min(sunchicks))]) ### Both measures of spread decrease with the deletion of the lowest weight; though the sd is affected more than the IQR...
+
+## Answer 14.1
+library("ggplot2")
+library("GGally")
+#(a)
+hist(InsectSprays$count)
+#(b)
+inspray <- levels(InsectSprays$spray)
+incount <- tapply(InsectSprays$count,INDEX=InsectSprays$spray,FUN=sum)
+barplot(incount,names.arg=inspray,xlab="Spray",ylab="Total insects",main="Barplot of number of insects\naccording to spray type",col="pink")
+pie(incount,labels=inspray,main="Abundance of insects\naccording to spray type")
+#(c)
+qplot(InsectSprays$spray,InsectSprays$count,geom="boxplot",xlab="Spray",ylab="# of insects",main="Boxplots of insect counts\naccording to spray type")
+#(d)
+USArrests
+?USArrests
+qplot(USArrests[,3],geom="blank",main="US states urban population",xlab="proportion urban") + geom_histogram(color="blue",fill="white",breaks=seq(0,100,10),closed="right") + geom_vline(mapping=aes(xintercept=c(quantile(USArrests[,3],0.25),median(USArrests[,3]),quantile(USArrests[,3],0.75)),linetype=factor(c("1st Q","median","3rd Q"))),show.legend=TRUE) + scale_linetype_manual(values=3:5) + labs(linetype="")
+#(e)
+ustab <- t(as.matrix(USArrests[,-3]))
+barplot(ustab,names.arg=state.abb,horiz=T,las=1,legend.text=c("murder","rape","assault"),main="USA arrests per 100000\nby state and serious crime")
+#(f)
+urbancat <- rep(1,50)
+urbancat[USArrests$UrbanPop<=median(USArrests$UrbanPop)] <- 0
+urbancat <- factor(urbancat)
+#(g)
+myUSArrests <- USArrests[,-3]
+myUSArrests$urbancat <- urbancat
+#(h)
+ggpairs(myUSArrests,aes(col=urbancat),axisLabels="internal")
+#(i)
+magquan <- quantile(quakes$mag,c(1/3,2/3))
+magfac <- cut(quakes$mag,breaks=c(min(quakes$mag),magquan[1],magquan[2],max(quakes$mag)),include.lowest=TRUE)
+#(j)
+plot(quakes[,2],quakes[,1],pch=(1:3)[magfac],xlab="Longitude",ylab="Latitude")
+#(k)
+legend("bottomleft",legend=levels(magfac),pch=1:3)
+
+# Answer 15.1
+
+#(a)
+4/52 # Pr(Ace)
+1/52 # Pr(4 of spades)
+#(b)
+13/52 # Pr(A|B)==Pr(A), so the two events are independent
+#(c)
+13/52 # Pr(A)
+13/51 # Pr(A|B)  Pr(A|B)!=Pr(A), so the two events are no longer independent
+#(d)
+12/52 # Pr(C)
+26/52 # Pr(D)
+6/52 # Pr(C and D) = Pr(C|D)*Pr(D) = (6/26)*(26/52) = 6/52 != 0 therefore C and D are not mutually exclusive
+
+## Answer 15.2
+#(a)
+##(i) Realization of discrete random variable
+##(ii) Discrete random variable
+##(iii) Discrete random variable
+##(iv) Continuous random variable
+##(v) Realization of discrete random variable
+##(vi) Continous random variable
+#(b)
+S.outcomes <- 1:5
+##(i)
+1-0.1-0.13-0.21-0.15 # Pr(S=4)
+S.prob <- c(0.1,0.13,0.21,0.41,0.15)
+##(ii)
+cumsum(S.prob)
+##(iii)
+mu.S <- sum(S.prob*S.outcomes)
+mu.S
+##(iv)
+sqrt(sum(S.prob*(S.outcomes-mu.S)^2))
+##(v)
+sum(S.prob[3:5])
+##(vi)
+barplot(S.prob,ylim=c(0,0.5),names.arg=S.outcomes,space=0,xlab="s",ylab="Pr(S = s)") ### Unimodal, asymmetric -- slight left skew
+#(c)
+##(i)
+fw <- function(w){
+  w.upper <- w>65 & w<=90
+  w.lower <- w>=40 & w<=65
+  
+  result <- rep(0,length(w))
+  result[w.upper] <- (90-w[w.upper])/625
+  result[w.lower] <- (w[w.lower]-40)/625	
+  return(result)
+}
+##(ii)
+Fw <- function(w){
+  w.upper <- w>65 & w<=90
+  w.lower <- w>=40 & w<=65
+  
+  result <- rep(0,length(w))
+  result[w.upper] <- (180*w[w.upper]-w[w.upper]^2-6850)/1250
+  result[w.lower] <- (w[w.lower]^2-80*w[w.lower]+1600)/1250
+  result[w>90] <- 1
+  
+  return(result)
+}
+##(iii)
+fw(55.2)
+Fw(55.2)
+##(iv)
+1-Fw(60)
+##(v)
+Fw(76.89)-Fw(60.3)
+#(d)
+##(i) Bimodal, symmetric
+##(ii) Trimodal, asymmetric -- right skew
+##(iii) Unimodal, symmetric
+##(iv) Unimodal, asymmetric -- right skew
+
+
+```
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r cars}
+summary(cars)
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
